@@ -1,0 +1,31 @@
+server:
+  port: 8092
+spring:
+  security:
+    user:
+      name: root
+      password: root
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: root
+    hikari:
+      maximum-pool-size: 5
+      connection-timeout: 20000
+  liquibase:
+    change-log: classpath:db/changelog/changelog.sql
+  cloud:
+    zookeeper:
+      connect-string: localhost:2181
+  application:
+    name: user-service
+springdoc:
+  swagger-ui:
+    enabled: true
+grpc:
+  server:
+    port: 9090
+  client:
+    authenticate:
+      address: static://localhost:9090
+      negotiation-type: plaintext

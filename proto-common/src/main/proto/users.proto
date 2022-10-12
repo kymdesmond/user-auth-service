@@ -1,0 +1,33 @@
+syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+
+package com.listing.userservice;
+
+option java_multiple_files = true;
+option java_package = "com.listing.userservice";
+
+message UserDetailsRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message UserDetailsResponse {
+  string responseCode = 1;
+  string responseMessage = 2;
+  UserDetails data = 3;
+}
+
+message UserDetails {
+  int32 id = 1;
+  string firstName = 2;
+  string lastName = 3;
+  string phone = 4;
+  string email = 5;
+  string password = 6;
+  google.protobuf.Timestamp dateCreated = 7;
+  google.protobuf.Timestamp dateUpdated = 8;
+}
+
+service AuthenticateService {
+  rpc authenticate(UserDetailsRequest) returns (UserDetailsResponse);
+}
