@@ -19,6 +19,9 @@ spring:
       connect-string: localhost:2181
   application:
     name: user-service
+  redis:
+    host: localhost
+    port: 6379
 springdoc:
   swagger-ui:
     enabled: true

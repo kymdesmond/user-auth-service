@@ -1,7 +1,7 @@
 package com.listing.user.auth.controller;
 
-import com.listing.user.auth.model.auth.AuthUser;
-import com.listing.user.auth.model.response.ApiResponse;
+import com.listing.user.auth.model.auth.AuthUserRequest;
+import com.listing.user.auth.model.response.ApiResponseDto;
 import com.listing.user.auth.service.UserDetailsService;
 import com.listing.user.auth.util.JwtUtil;
 import lombok.AllArgsConstructor;
@@ -34,8 +34,8 @@ public class AuthController {
     JwtUtil jwtUtil;
 
     @PostMapping(value = "/authenticate", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> authenticateUser(@RequestBody AuthUser userRequest, HttpServletRequest request) {
-        ApiResponse apiResponse = new ApiResponse();
+    public ResponseEntity<ApiResponseDto> authenticateUser(@RequestBody AuthUserRequest userRequest, HttpServletRequest request) {
+        ApiResponseDto apiResponseDto = new ApiResponseDto();
 
         final UserDetails userDetails = userDetailsService.loadUserByUsername(userRequest.getEmail());
         if (userDetails != null) {
@@ -44,25 +44,25 @@ public class AuthController {
                         .authenticate(new UsernamePasswordAuthenticationToken(userRequest.getEmail(), userRequest.getPassword()));
                 if (authentication.isAuthenticated()) {
                     final String jwt = jwtUtil.generateToken(userDetails);
-                    apiResponse.setResponseCode("00");
-                    apiResponse.setResponseMessage("Authentication Successful");
-                    apiResponse.setData(jwt);
-                    return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+                    apiResponseDto.setResponseCode("00");
+                    apiResponseDto.setResponseMessage("Authentication Successful");
+                    apiResponseDto.setData(jwt);
+                    return new ResponseEntity<>(apiResponseDto, HttpStatus.OK);
                 } else {
-                    apiResponse.setResponseCode("01");
-                    apiResponse.setResponseMessage("Authentication Failed. Bad Credentials");
-                    return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
+                    apiResponseDto.setResponseCode("01");
+                    apiResponseDto.setResponseMessage("Authentication Failed. Bad Credentials");
+                    return new ResponseEntity<>(apiResponseDto, HttpStatus.BAD_REQUEST);
                 }
 
             }catch (BadCredentialsException e) {
-                apiResponse.setResponseCode("01");
-                apiResponse.setResponseMessage("Authentication Failed. Bad Credentials");
-                return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
+                apiResponseDto.setResponseCode("01");
+                apiResponseDto.setResponseMessage("Authentication Failed. Bad Credentials");
+                return new ResponseEntity<>(apiResponseDto, HttpStatus.BAD_REQUEST);
             }
         } else {
-            apiResponse.setResponseCode("01");
-            apiResponse.setResponseMessage("Authentication Failed. Username not found");
-            return new ResponseEntity<>(apiResponse, HttpStatus.NOT_FOUND);
+            apiResponseDto.setResponseCode("01");
+            apiResponseDto.setResponseMessage("Authentication Failed. Username not found");
+            return new ResponseEntity<>(apiResponseDto, HttpStatus.NOT_FOUND);
         }
 
     }
