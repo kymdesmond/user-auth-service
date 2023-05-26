@@ -7,8 +7,8 @@
         <artifactId>user</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <groupId>com.listing.user</groupId>
-    <artifactId>service</artifactId>
+    <groupId>com.listing</groupId>
+    <artifactId>user-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>user-service</name>
     <description>user-service</description>

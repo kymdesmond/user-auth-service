@@ -36,9 +36,10 @@ public class UsersController {
             UsersEntity usersEntity = databaseService.createUser(usersRequest);
             usersEntityDto = mapper.convertValue(usersEntity, new TypeReference<>() {});
             log.info("user created -- {}", usersEntityDto);
-            return new ResponseEntity<>(usersEntityDto, HttpStatus.CREATED);
+            return ResponseEntity.ok(usersEntityDto);
         } catch (Exception exception) {
-            log.error("failed to create user");
+            exception.printStackTrace();
+            log.error("failed to create user -- {}", exception.getMessage());
             return ResponseEntity.internalServerError().build();
         }
     }

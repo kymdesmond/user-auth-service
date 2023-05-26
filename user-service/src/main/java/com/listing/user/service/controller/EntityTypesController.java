@@ -12,6 +12,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,6 +45,7 @@ public class EntityTypesController {
             EntityTypesEntity entityTypesEntity = new EntityTypesEntity();
             entityTypesEntity.setName(entityTypeRequest.name());
             entityTypesEntity.setDescription(entityTypeRequest.description());
+            entityTypesEntity.setDateCreated(new Timestamp(new Date().getTime()));
             databaseService.createEntityType(entityTypesEntity);
             log.info("create entity type request -- {}", entityTypeRequest);
             entityTypesEntityDto = mapper.convertValue(entityTypesEntity, new TypeReference<>() {});

@@ -12,6 +12,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,7 +48,11 @@ public class EntitiesController {
             entitiesEntity.setName(entityRequest.name());
             entitiesEntity.setEntityTypeId(entityRequest.entityTypeId());
             entitiesEntity.setMsisdn(entityRequest.msisdn());
+            entitiesEntity.setEmail(entityRequest.email());
+            entitiesEntity.setWebsite(entityRequest.website());
             entitiesEntity.setAddress(entityRequest.address());
+            entitiesEntity.setDateCreated(new Timestamp(new Date().getTime()));
+            entitiesEntity.setStatus(1);
             entitiesEntity.setCreatedBy(entityRequest.createdBy());
 
             databaseService.createEntity(entitiesEntity);
@@ -90,6 +96,8 @@ public class EntitiesController {
                 entitiesEntity.setEntityTypeId(entityRequest.entityTypeId());
                 entitiesEntity.setMsisdn(entityRequest.msisdn());
                 entitiesEntity.setAddress(entityRequest.address());
+                entitiesEntity.setEmail(entityRequest.email());
+                entitiesEntity.setWebsite(entityRequest.website());
                 entitiesEntity.setCreatedBy(entityRequest.createdBy());
 
                 databaseService.updateEntity(entitiesEntity);

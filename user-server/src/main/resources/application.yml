@@ -10,8 +10,12 @@ spring:
     username: postgres
     password: root
     hikari:
-      maximum-pool-size: 5
+      maximum-pool-size: 20
       connection-timeout: 20000
+      minimum-idle: 10
+  jpa:
+    hibernate:
+      ddl-auto: validate
   liquibase:
     change-log: classpath:db/changelog/changelog.sql
   cloud:

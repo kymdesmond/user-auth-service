@@ -7,7 +7,6 @@
         <groupId>com.listing</groupId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <groupId>com.listing</groupId>
     <artifactId>user-server</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>user-server</name>

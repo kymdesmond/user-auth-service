@@ -15,7 +15,7 @@ import java.util.Optional;
 @Slf4j
 public class UserServiceImpl extends AuthenticateServiceGrpc.AuthenticateServiceImplBase {
 
-    private UsersEntityServiceImpl usersEntityService;
+    private final UsersEntityServiceImpl usersEntityService;
 
     public UserServiceImpl(UsersEntityServiceImpl usersEntityService) {
         this.usersEntityService = usersEntityService;

@@ -25,7 +25,7 @@ public class EntitiesEntity {
     private String email;
     @Basic
     @Column(name = "website")
-    private Integer website;
+    private String website;
     @Basic
     @Column(name = "address")
     private String address;
@@ -79,11 +79,11 @@ public class EntitiesEntity {
         this.email = email;
     }
 
-    public Integer getWebsite() {
+    public String getWebsite() {
         return website;
     }
 
-    public void setWebsite(Integer website) {
+    public void setWebsite(String website) {
         this.website = website;
     }
 

@@ -6,12 +6,15 @@ spring:
       name: root
       password: root
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
+    url: jdbc:postgresql://localhost:5432/listing
     username: postgres
     password: root
     hikari:
       maximum-pool-size: 5
       connection-timeout: 20000
+  jpa:
+    hibernate:
+      ddl-auto: validate
   liquibase:
     change-log: classpath:db/changelog/changelog.sql
   cloud:

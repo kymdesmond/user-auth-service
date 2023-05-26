@@ -1,19 +1,10 @@
 package com.listing.user.service.model.dto;
 
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import java.io.Serializable;
 import java.sql.Timestamp;
 
-@Data
-public class UsersEntityDto implements Serializable {
-    private final long id;
-    private final String firstName;
-    private final String lastName;
-    private final String username;
-    private final int phone;
-    private final String email;
-    private final Timestamp dateCreated;
-    private final Timestamp dateUpdated;
-    private final Integer createdBy;
+@JsonIgnoreProperties(ignoreUnknown = true)
+public record UsersEntityDto(long id, String firstName, String lastName, String username, String phone, String email,
+                             Timestamp dateCreated, Timestamp dateUpdated) {
 }
