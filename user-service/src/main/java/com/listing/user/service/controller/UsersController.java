@@ -7,7 +7,6 @@ import com.listing.user.service.model.request.UsersRequest;
 import com.listing.user.service.entity.UsersEntity;
 import com.listing.user.service.service.DatabaseService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

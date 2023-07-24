@@ -1,6 +1,8 @@
 server:
   port: 8092
 spring:
+  cache:
+    type: redis
   security:
     user:
       name: root

@@ -1,10 +1,13 @@
 package com.listing.user.auth.configuration;
 
-import com.listing.user.auth.filter.WebRequestFilter;
+import com.listing.user.auth.service.AuthService;
 import com.listing.user.auth.service.UserDetailsService;
 import com.listing.user.auth.util.JwtUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -12,28 +15,37 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter;
 
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
+import java.io.IOException;
 
 import static org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter.Directive.*;
 import static org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter.Directive.EXECUTION_CONTEXTS;
 
 @EnableWebSecurity
+@RequiredArgsConstructor
+@Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private UserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService;
 
-    @Autowired
-    private WebRequestFilter webRequestFilter;
+    private final JwtUtil jwtUtil;
 
-    @Autowired
-    private JwtUtil jwtUtil;
+    private final AuthService authService;
+
+    private final RedisTemplate<String, String> redisTemplate;
 
     private static final ClearSiteDataHeaderWriter.Directive[] SOURCE = {CACHE, COOKIES, STORAGE, EXECUTION_CONTEXTS};
 
@@ -58,8 +70,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity.csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/auth/authenticate").permitAll()
-                .antMatchers("/users/create-user").permitAll()
-                .antMatchers("/resetpassword").permitAll()
+                .antMatchers("/users/create").permitAll()
+                .antMatchers("/users/reset-password").permitAll()
                 .antMatchers(
                         HttpMethod.GET,
                         "/",
@@ -82,10 +94,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .cors()
                 .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                .sessionManagement(conf -> conf.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         httpSecurity.logout(logout -> logout
-                        .logoutUrl("/logout")
+                        .logoutUrl("/auth/logout")
                         .addLogoutHandler((request, response, auth) -> {
                             for (Cookie cookie : request.getCookies()) {
                                 String cookieName = cookie.getName();
@@ -95,13 +106,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                             }
                             HttpSession session = request.getSession();
                             String token = (String) session.getAttribute("token");
-                            String resetToken = jwtUtil.invalidateToken(token);
+                            jwtUtil.invalidateToken(token);
                             session.invalidate();
-                            System.out.println("*** logout ***");
                         })
 //                      .addLogoutHandler(new HeaderWriterLogoutHandler(new ClearSiteDataHeaderWriter(SOURCE)))
         );
-        httpSecurity.addFilterBefore(webRequestFilter, UsernamePasswordAuthenticationFilter.class);
+        httpSecurity.addFilterBefore(this::doFilterInternal, UsernamePasswordAuthenticationFilter.class);
 
+    }
+
+    private void doFilterInternal(
+            ServletRequest request,
+            ServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        authService.authenticate((HttpServletRequest) request).ifPresent(SecurityContextHolder.getContext()::setAuthentication);
+        filterChain.doFilter(request, response);
     }
 }
