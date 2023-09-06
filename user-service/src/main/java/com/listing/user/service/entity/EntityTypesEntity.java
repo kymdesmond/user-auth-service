@@ -1,11 +1,15 @@
 package com.listing.user.service.entity;
 
+import lombok.Getter;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Objects;
 
+@Getter
 @Entity
-@Table(name = "entity_types", schema = "auth", catalog = "ipl")
+@Table(name = "entity_types", schema = "auth")
 public class EntityTypesEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
@@ -20,33 +24,19 @@ public class EntityTypesEntity {
     @Basic
     @Column(name = "date_created")
     private Timestamp dateCreated;
-
-    public int getId() {
-        return id;
-    }
+    @OneToMany(mappedBy = "entityType")
+    private List<EntitiesEntity> entityList;
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public Timestamp getDateCreated() {
-        return dateCreated;
     }
 
     public void setDateCreated(Timestamp dateCreated) {

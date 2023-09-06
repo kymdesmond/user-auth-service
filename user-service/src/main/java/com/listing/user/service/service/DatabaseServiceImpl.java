@@ -37,7 +37,7 @@ public class DatabaseServiceImpl implements DatabaseService{
     }
 
     @Override
-    public Optional<UsersEntity> findById(Long id) {
+    public Optional<UsersEntity> findById(int id) {
         return usersEntityService.findById(id);
     }
 

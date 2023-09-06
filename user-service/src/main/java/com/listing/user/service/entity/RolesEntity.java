@@ -1,11 +1,15 @@
 package com.listing.user.service.entity;
 
+import lombok.Getter;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Objects;
 
+@Getter
 @Entity
-@Table(name = "roles", schema = "auth", catalog = "postgres")
+@Table(name = "roles", schema = "auth")
 public class RolesEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
@@ -29,57 +33,31 @@ public class RolesEntity {
     @Basic
     @Column(name = "status")
     private Integer status;
-
-    public int getId() {
-        return id;
-    }
+    @OneToMany(mappedBy = "rolesEntity")
+    private List<RoleMapEntity> roleMapEntityList;
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public Integer getCreatedBy() {
-        return createdBy;
     }
 
     public void setCreatedBy(Integer createdBy) {
         this.createdBy = createdBy;
     }
 
-    public Timestamp getDateCreated() {
-        return dateCreated;
-    }
-
     public void setDateCreated(Timestamp dateCreated) {
         this.dateCreated = dateCreated;
     }
 
-    public Timestamp getDateUpdated() {
-        return dateUpdated;
-    }
-
     public void setDateUpdated(Timestamp dateUpdated) {
         this.dateUpdated = dateUpdated;
-    }
-
-    public Integer getStatus() {
-        return status;
     }
 
     public void setStatus(Integer status) {

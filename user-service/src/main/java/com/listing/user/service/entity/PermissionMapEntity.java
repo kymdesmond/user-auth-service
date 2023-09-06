@@ -1,56 +1,53 @@
 package com.listing.user.service.entity;
 
-import javax.persistence.*;
-import java.util.Objects;
+import lombok.Getter;
 
+import javax.persistence.*;
+
+@Getter
 @Entity
-@Table(name = "permission_map", schema = "auth", catalog = "postgres")
+@Table(name = "permission_map", schema = "auth")
 public class PermissionMapEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id")
     private int id;
-    @Basic
-    @Column(name = "role_id")
-    private Integer roleId;
-    @Basic
-    @Column(name = "permission_id")
-    private Integer permissionId;
-
-    public int getId() {
-        return id;
-    }
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    private RolesEntity rolesEntity;
+    @ManyToOne
+    @JoinColumn(name = "permission_id")
+    private PermissionsEntity permissionsEntity;
 
     public void setId(int id) {
         this.id = id;
     }
 
-    public Integer getRoleId() {
-        return roleId;
+    public void setRolesEntity(RolesEntity rolesEntity) {
+        this.rolesEntity = rolesEntity;
     }
 
-    public void setRoleId(Integer roleId) {
-        this.roleId = roleId;
-    }
-
-    public Integer getPermissionId() {
-        return permissionId;
-    }
-
-    public void setPermissionId(Integer permissionId) {
-        this.permissionId = permissionId;
+    public void setPermissionsEntity(PermissionsEntity permissionsEntity) {
+        this.permissionsEntity = permissionsEntity;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+
         PermissionMapEntity that = (PermissionMapEntity) o;
-        return id == that.id && Objects.equals(roleId, that.roleId) && Objects.equals(permissionId, that.permissionId);
+
+        if (id != that.id) return false;
+        if (!rolesEntity.equals(that.rolesEntity)) return false;
+        return permissionsEntity.equals(that.permissionsEntity);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, roleId, permissionId);
+        int result = id;
+        result = 31 * result + rolesEntity.hashCode();
+        result = 31 * result + permissionsEntity.hashCode();
+        return result;
     }
 }

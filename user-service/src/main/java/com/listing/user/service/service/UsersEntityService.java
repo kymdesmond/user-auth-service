@@ -12,6 +12,6 @@ public interface UsersEntityService {
 
     UsersEntity createUser(UsersRequest usersRequest);
     List<UsersEntity> findAll();
-    Optional<UsersEntity> findById(Long id);
+    Optional<UsersEntity> findById(int id);
     Optional<UsersEntity> findUserByEmail(String email);
 }

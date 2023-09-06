@@ -14,13 +14,10 @@ import org.springframework.util.StringUtils;
 public class OpenApi30Config {
 
   private final String moduleName;
-  private final String apiVersion;
 
   public OpenApi30Config(
-      @Value("${spring.application.name}") String moduleName,
-      @Value("${springdoc.swagger-ui.version}") String apiVersion) {
+      @Value("${spring.application.name}") String moduleName) {
     this.moduleName = moduleName;
-    this.apiVersion = apiVersion;
   }
 
   @Bean
@@ -39,6 +36,6 @@ public class OpenApi30Config {
                         .bearerFormat("JWT")
                 )
         )
-        .info(new Info().title(apiTitle).version(apiVersion));
+        .info(new Info().title(apiTitle));
   }
 }

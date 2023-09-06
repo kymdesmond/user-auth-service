@@ -1,7 +1,7 @@
 package com.listing.user.service.controller;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.listing.user.service.entity.EntityTypesEntity;
+import com.listing.user.service.mapper.entity.EntityMapper;
 import com.listing.user.service.model.dto.EntitiesEntityDto;
 import com.listing.user.service.model.request.EntityRequest;
 import com.listing.user.service.entity.EntitiesEntity;
@@ -28,13 +28,15 @@ public class EntitiesController {
         this.databaseService = databaseService;
     }
 
-    ObjectMapper mapper = new ObjectMapper();
+    EntityMapper mapper = EntityMapper.INSTANCE;
 
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<EntitiesEntityDto>> listEntities() {
         log.info("find all entities");
         List<EntitiesEntity> entityList = databaseService.listEntities();
-        List<EntitiesEntityDto> entityDtoList = mapper.convertValue(entityList, new TypeReference<>() {});
+        List<EntitiesEntityDto> entityDtoList = entityList
+                .stream()
+                .map(entitiesEntity -> mapper.convertValue(entitiesEntity)).toList();
         return ResponseEntity.status(HttpStatus.OK).body(entityDtoList);
     }
 
@@ -42,11 +44,13 @@ public class EntitiesController {
     public ResponseEntity<EntitiesEntityDto> createEntity(@RequestBody EntityRequest entityRequest) {
         log.info("create entity request -- {}", entityRequest);
         EntitiesEntity entitiesEntity = new EntitiesEntity();
+        Optional<EntityTypesEntity> optionalEntityTypesEntity =
+                databaseService.findEntityType(entityRequest.entityTypeId());
         HttpStatus httpStatus;
         EntitiesEntityDto entitiesEntityDto = null;
         try {
             entitiesEntity.setName(entityRequest.name());
-            entitiesEntity.setEntityTypeId(entityRequest.entityTypeId());
+            entitiesEntity.setEntityType(optionalEntityTypesEntity.orElse(null));
             entitiesEntity.setMsisdn(entityRequest.msisdn());
             entitiesEntity.setEmail(entityRequest.email());
             entitiesEntity.setWebsite(entityRequest.website());
@@ -57,7 +61,7 @@ public class EntitiesController {
 
             databaseService.createEntity(entitiesEntity);
             log.info("entity created successfully");
-            entitiesEntityDto = mapper.convertValue(entitiesEntity, new TypeReference<>() {});
+            entitiesEntityDto = mapper.convertValue(entitiesEntity);
             httpStatus = HttpStatus.CREATED;
         } catch (Exception e) {
             log.error("error occurred while creating entity -- {}", e.getMessage());
@@ -74,7 +78,7 @@ public class EntitiesController {
         Optional<EntitiesEntity> optionalEntitiesEntity = databaseService.findEntity(id);
         EntitiesEntityDto entitiesEntityDto = null;
         if (optionalEntitiesEntity.isPresent()) {
-            entitiesEntityDto = mapper.convertValue(optionalEntitiesEntity.get(), new TypeReference<>() {});
+            entitiesEntityDto = mapper.convertValue(optionalEntitiesEntity.get());
             httpStatus = HttpStatus.OK;
         } else {
             httpStatus = HttpStatus.NO_CONTENT;
@@ -88,12 +92,14 @@ public class EntitiesController {
         log.info("update entity request -- id [{}] -- {}", id, entityRequest);
         HttpStatus httpStatus;
         EntitiesEntityDto entitiesEntityDto = null;
+        Optional<EntityTypesEntity> optionalEntityTypesEntity =
+                databaseService.findEntityType(entityRequest.entityTypeId());
         try {
             Optional<EntitiesEntity> optionalEntitiesEntity = databaseService.findEntity(id);
             if (optionalEntitiesEntity.isPresent()) {
                 EntitiesEntity entitiesEntity = optionalEntitiesEntity.get();
                 entitiesEntity.setName(entityRequest.name());
-                entitiesEntity.setEntityTypeId(entityRequest.entityTypeId());
+                entitiesEntity.setEntityType(optionalEntityTypesEntity.orElse(null));
                 entitiesEntity.setMsisdn(entityRequest.msisdn());
                 entitiesEntity.setAddress(entityRequest.address());
                 entitiesEntity.setEmail(entityRequest.email());
@@ -102,7 +108,7 @@ public class EntitiesController {
 
                 databaseService.updateEntity(entitiesEntity);
                 log.info("entity updated successfully");
-                entitiesEntityDto = mapper.convertValue(optionalEntitiesEntity.get(), new TypeReference<>() {});
+                entitiesEntityDto = mapper.convertValue(optionalEntitiesEntity.get());
                 httpStatus = HttpStatus.OK;
             } else {
                 httpStatus = HttpStatus.NO_CONTENT;

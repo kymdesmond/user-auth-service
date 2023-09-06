@@ -1,11 +1,14 @@
 package com.listing.user.service.entity;
 
+import lombok.Getter;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Objects;
 
+@Getter
 @Entity
-@Table(name = "permissions", schema = "auth", catalog = "postgres")
+@Table(name = "permissions", schema = "auth")
 public class PermissionsEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
@@ -30,56 +33,28 @@ public class PermissionsEntity {
     @Column(name = "status")
     private Integer status;
 
-    public int getId() {
-        return id;
-    }
-
     public void setId(int id) {
         this.id = id;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public Integer getCreatedBy() {
-        return createdBy;
     }
 
     public void setCreatedBy(Integer createdBy) {
         this.createdBy = createdBy;
     }
 
-    public Timestamp getDateCreated() {
-        return dateCreated;
-    }
-
     public void setDateCreated(Timestamp dateCreated) {
         this.dateCreated = dateCreated;
     }
 
-    public Timestamp getDateUpdated() {
-        return dateUpdated;
-    }
-
     public void setDateUpdated(Timestamp dateUpdated) {
         this.dateUpdated = dateUpdated;
-    }
-
-    public Integer getStatus() {
-        return status;
     }
 
     public void setStatus(Integer status) {

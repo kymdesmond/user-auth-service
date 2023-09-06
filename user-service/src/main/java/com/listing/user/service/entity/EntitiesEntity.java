@@ -1,19 +1,22 @@
 package com.listing.user.service.entity;
 
+import lombok.Getter;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Objects;
 
+@Getter
 @Entity
-@Table(name = "entities", schema = "auth", catalog = "ipl")
+@Table(name = "entities", schema = "auth")
 public class EntitiesEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id")
     private int id;
-    @Basic
-    @Column(name = "entity_type_id")
-    private Integer entityTypeId;
+    @ManyToOne()
+    @JoinColumn(name = "entity_type_id")
+    private EntityTypesEntity entityType;
     @Basic
     @Column(name = "name")
     private String name;
@@ -39,80 +42,40 @@ public class EntitiesEntity {
     @Column(name = "status")
     private Integer status;
 
-    public int getId() {
-        return id;
-    }
-
     public void setId(int id) {
         this.id = id;
     }
 
-    public Integer getEntityTypeId() {
-        return entityTypeId;
-    }
-
-    public void setEntityTypeId(Integer entityTypeId) {
-        this.entityTypeId = entityTypeId;
-    }
-
-    public String getName() {
-        return name;
+    public void setEntityType(EntityTypesEntity entityType) {
+        this.entityType = entityType;
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
-    public String getMsisdn() {
-        return msisdn;
-    }
-
     public void setMsisdn(String msisdn) {
         this.msisdn = msisdn;
-    }
-
-    public String getEmail() {
-        return email;
     }
 
     public void setEmail(String email) {
         this.email = email;
     }
 
-    public String getWebsite() {
-        return website;
-    }
-
     public void setWebsite(String website) {
         this.website = website;
-    }
-
-    public String getAddress() {
-        return address;
     }
 
     public void setAddress(String address) {
         this.address = address;
     }
 
-    public Timestamp getDateCreated() {
-        return dateCreated;
-    }
-
     public void setDateCreated(Timestamp dateCreated) {
         this.dateCreated = dateCreated;
     }
 
-    public Integer getCreatedBy() {
-        return createdBy;
-    }
-
     public void setCreatedBy(Integer createdBy) {
         this.createdBy = createdBy;
-    }
-
-    public Integer getStatus() {
-        return status;
     }
 
     public void setStatus(Integer status) {
@@ -123,12 +86,33 @@ public class EntitiesEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+
         EntitiesEntity that = (EntitiesEntity) o;
-        return id == that.id && entityTypeId.equals(that.entityTypeId) && name.equals(that.name) && Objects.equals(msisdn, that.msisdn) && Objects.equals(email, that.email) && Objects.equals(website, that.website) && Objects.equals(address, that.address) && Objects.equals(dateCreated, that.dateCreated) && Objects.equals(createdBy, that.createdBy) && Objects.equals(status, that.status);
+
+        if (id != that.id) return false;
+        if (!entityType.equals(that.entityType)) return false;
+        if (!name.equals(that.name)) return false;
+        if (!Objects.equals(msisdn, that.msisdn)) return false;
+        if (!Objects.equals(email, that.email)) return false;
+        if (!Objects.equals(website, that.website)) return false;
+        if (!Objects.equals(address, that.address)) return false;
+        if (!Objects.equals(dateCreated, that.dateCreated)) return false;
+        if (!Objects.equals(createdBy, that.createdBy)) return false;
+        return Objects.equals(status, that.status);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, entityTypeId, name, msisdn, email, website, address, dateCreated, createdBy, status);
+        int result = id;
+        result = 31 * result + entityType.hashCode();
+        result = 31 * result + name.hashCode();
+        result = 31 * result + (msisdn != null ? msisdn.hashCode() : 0);
+        result = 31 * result + (email != null ? email.hashCode() : 0);
+        result = 31 * result + (website != null ? website.hashCode() : 0);
+        result = 31 * result + (address != null ? address.hashCode() : 0);
+        result = 31 * result + (dateCreated != null ? dateCreated.hashCode() : 0);
+        result = 31 * result + (createdBy != null ? createdBy.hashCode() : 0);
+        result = 31 * result + (status != null ? status.hashCode() : 0);
+        return result;
     }
 }

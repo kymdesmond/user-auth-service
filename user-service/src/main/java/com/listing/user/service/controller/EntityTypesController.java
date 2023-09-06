@@ -1,7 +1,6 @@
 package com.listing.user.service.controller;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.listing.user.service.mapper.entity_type.EntityTypeMapper;
 import com.listing.user.service.model.dto.EntityTypesEntityDto;
 import com.listing.user.service.model.request.EntityTypeRequest;
 import com.listing.user.service.service.DatabaseService;
@@ -27,13 +26,16 @@ public class EntityTypesController {
     public EntityTypesController(DatabaseService databaseService) {
         this.databaseService = databaseService;
     }
-    ObjectMapper mapper = new ObjectMapper();
+    EntityTypeMapper mapper = EntityTypeMapper.INSTANCE;
 
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<EntityTypesEntityDto>> listEntityTypes() {
         log.info("find all entity types");
-        List<EntityTypesEntity> entityList = databaseService.listEntityTypes();
-        List<EntityTypesEntityDto> entityTypesEntityDto = mapper.convertValue(entityList, new TypeReference<>() {});
+        List<EntityTypesEntity> entityTypesEntityList = databaseService.listEntityTypes();
+        List<EntityTypesEntityDto> entityTypesEntityDto = entityTypesEntityList
+                .stream()
+                .map(entityTypesEntity ->  mapper.entityTypeToDto(entityTypesEntity))
+                .toList();
         return ResponseEntity.status(HttpStatus.OK).body(entityTypesEntityDto);
     }
 
@@ -48,7 +50,7 @@ public class EntityTypesController {
             entityTypesEntity.setDateCreated(new Timestamp(new Date().getTime()));
             databaseService.createEntityType(entityTypesEntity);
             log.info("create entity type request -- {}", entityTypeRequest);
-            entityTypesEntityDto = mapper.convertValue(entityTypesEntity, new TypeReference<>() {});
+            entityTypesEntityDto = mapper.entityTypeToDto(entityTypesEntity);
             httpStatus = HttpStatus.CREATED;
         } catch (Exception exception) {
             log.error("failed to created entity type -- {}", exception.getMessage());
@@ -73,8 +75,8 @@ public class EntityTypesController {
                 entityTypesEntity.setDescription(entityUpdateTypeRequest.description());
                 databaseService.updateEntityType(entityTypesEntity);
                 log.info("update entity type request -- {}", entityUpdateTypeRequest);
-                entityTypesEntityDto = mapper.convertValue(entityTypesEntity, new TypeReference<>() {});
-                httpStatus = HttpStatus.CREATED;
+                entityTypesEntityDto = mapper.entityTypeToDto(entityTypesEntity);
+                httpStatus = HttpStatus.OK;
             } else {
                 log.error("entity type not found -- {}", id);
                 httpStatus = HttpStatus.NO_CONTENT;
@@ -94,7 +96,7 @@ public class EntityTypesController {
         Optional<EntityTypesEntity> optionalEntityTypesEntity = databaseService.findEntityType(id);
         EntityTypesEntityDto entityTypesEntityDto = null;
         if (optionalEntityTypesEntity.isPresent()) {
-            entityTypesEntityDto = mapper.convertValue(optionalEntityTypesEntity.get(), new TypeReference<>() {});
+            entityTypesEntityDto = mapper.entityTypeToDto(optionalEntityTypesEntity.get());
             httpStatus = HttpStatus.OK;
         } else {
             log.error("entity type not found -- {}", id);

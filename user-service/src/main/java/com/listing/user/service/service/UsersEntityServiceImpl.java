@@ -45,7 +45,7 @@ public class UsersEntityServiceImpl implements UsersEntityService{
     }
 
     @Override
-    public Optional<UsersEntity> findById(Long id) {
+    public Optional<UsersEntity> findById(int id) {
         return usersEntityRepository.findById(id);
     }
 

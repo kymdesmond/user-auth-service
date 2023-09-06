@@ -11,7 +11,7 @@ public class UsersEntityDto implements Serializable {
     private final String firstName;
     private final String lastName;
     private final String username;
-    private final int phone;
+    private final String phone;
     private final String email;
     private final Timestamp dateCreated;
     private final Timestamp dateUpdated;
