@@ -91,6 +91,10 @@ public class UsersEntity {
         this.entitiesEntity = entitiesEntity;
     }
 
+    public void setRoleMapEntityList(List<RoleMapEntity> roleMapEntityList) {
+        this.roleMapEntityList = roleMapEntityList;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
