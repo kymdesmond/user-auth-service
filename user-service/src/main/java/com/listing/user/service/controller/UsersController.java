@@ -64,12 +64,12 @@ public class UsersController {
                 .orElseGet(() -> ResponseEntity.noContent().build());
     }
 
-    /**
-     * todo
-     * - get all users
-     * - update user
-     * - delete user
-     * - find user by email
-     * - find usr by id
-     */
+    @GetMapping(value = "/find/{email}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<UsersEntityDto> findUserByEmail(@PathVariable String email) {
+        log.info("find user by email -- {}", email);
+        Optional<UsersEntity> optionalUsersEntity = databaseService.findUserByEmail(email);
+        return optionalUsersEntity
+                .map(usersEntity -> ResponseEntity.ok(mapper.convertValue(usersEntity)))
+                .orElseGet(() -> ResponseEntity.ok().build());
+    }
 }

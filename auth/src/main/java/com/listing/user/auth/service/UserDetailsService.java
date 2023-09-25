@@ -20,11 +20,15 @@ public class UserDetailsService implements org.springframework.security.core.use
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserDetailsRequest userDetailsRequest = UserDetailsRequest.newBuilder().setEmail(username).build();
-        UserDetailsResponse userDetailsResponse = authenticateServiceBlockingStub.authenticate(userDetailsRequest);
+        UserDetailsResponse userDetailsResponse = loadUserDetails(username);
         if (userDetailsResponse.hasData()) {
             return new User(userDetailsResponse.getData().getEmail(), userDetailsResponse.getData().getPassword(), new ArrayList<>());
         }
         return null;
+    }
+
+    public UserDetailsResponse loadUserDetails(String username) {
+        UserDetailsRequest userDetailsRequest = UserDetailsRequest.newBuilder().setEmail(username).build();
+        return authenticateServiceBlockingStub.authenticate(userDetailsRequest);
     }
 }
