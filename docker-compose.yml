@@ -1,0 +1,22 @@
+version: "3"
+services:
+  user:
+    image: user_service:latest
+    container_name: user-service
+    ports:
+      - "8092:8092"
+    build:
+      context: user-server/
+      dockerfile: Dockerfile
+    networks:
+      - listing-network
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres_container:5432/postgres
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_REDIS_HOST: redis-container
+      SPRING_REDIS_PORT: 6379
+      GRAPHQL_REGISTRY_URI: http://graphql-gateway:8000/registry
+networks:
+  listing-network:
+    external: true
