@@ -1,5 +1,7 @@
 package com.listing.user.service.service;
 
+import com.listing.user.service.model.dto.ChangePasswordResponseDto;
+import com.listing.user.service.model.request.ChangePasswordRequest;
 import com.listing.user.service.model.request.UsersRequest;
 import com.listing.user.service.entity.EntitiesEntity;
 import com.listing.user.service.entity.EntityTypesEntity;
@@ -29,6 +31,15 @@ public class DatabaseServiceImpl implements DatabaseService{
     @Override
     public UsersEntity createUser(UsersRequest usersRequest) {
         return usersEntityService.createUser(usersRequest);
+    }
+    @Override
+    public UsersEntity updateUser(UsersRequest usersRequest, Integer id) {
+        return usersEntityService.updateUser(usersRequest, id);
+    }
+
+    @Override
+    public ChangePasswordResponseDto updatePassword(ChangePasswordRequest changePasswordRequest, Integer id) {
+        return usersEntityService.updatePassword(changePasswordRequest, id);
     }
 
     @Override

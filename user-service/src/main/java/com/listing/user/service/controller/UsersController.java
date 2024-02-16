@@ -1,7 +1,9 @@
 package com.listing.user.service.controller;
 
 import com.listing.user.service.mapper.user.UserMapper;
+import com.listing.user.service.model.dto.ChangePasswordResponseDto;
 import com.listing.user.service.model.dto.UsersEntityDto;
+import com.listing.user.service.model.request.ChangePasswordRequest;
 import com.listing.user.service.model.request.UsersRequest;
 import com.listing.user.service.entity.UsersEntity;
 import com.listing.user.service.service.DatabaseService;
@@ -55,6 +57,12 @@ public class UsersController {
         } else return ResponseEntity.noContent().build();
     }
 
+    @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<UsersEntityDto> updateUser(@PathVariable Integer id, @RequestBody UsersRequest usersRequest) {
+        log.info("/update user -- id[{}] {}",id, usersRequest);
+        return ResponseEntity.ok(mapper.convertValue(databaseService.updateUser(usersRequest, id)));
+    }
+
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UsersEntityDto> findUserById(@PathVariable int id) {
         log.info("find user by id -- {}", id);
@@ -71,5 +79,11 @@ public class UsersController {
         return optionalUsersEntity
                 .map(usersEntity -> ResponseEntity.ok(mapper.convertValue(usersEntity)))
                 .orElseGet(() -> ResponseEntity.ok().build());
+    }
+
+    @PutMapping(value = "/change-password/{id}")
+    public ResponseEntity<ChangePasswordResponseDto> changePassword(@PathVariable Integer id, @RequestBody ChangePasswordRequest changePasswordRequest) {
+        log.info("change password request -- id[{}]", id);
+        return ResponseEntity.ok(databaseService.updatePassword(changePasswordRequest, id));
     }
 }

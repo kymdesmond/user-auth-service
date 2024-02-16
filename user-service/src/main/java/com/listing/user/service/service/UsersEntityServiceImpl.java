@@ -1,6 +1,8 @@
 package com.listing.user.service.service;
 
 import com.listing.user.service.entity.EntitiesEntity;
+import com.listing.user.service.model.dto.ChangePasswordResponseDto;
+import com.listing.user.service.model.request.ChangePasswordRequest;
 import com.listing.user.service.model.request.UsersRequest;
 import com.listing.user.service.entity.UsersEntity;
 import com.listing.user.service.repository.EntitiesEntityRepository;
@@ -44,6 +46,46 @@ public class UsersEntityServiceImpl implements UsersEntityService{
         usersEntity.setDateCreated(new Timestamp(new Date().getTime()));
         usersEntity.setDateUpdated(new Timestamp(new Date().getTime()));
         return usersEntityRepository.save(usersEntity);
+    }
+
+    @Override
+    public UsersEntity updateUser(UsersRequest usersRequest, Integer id) {
+        Optional<UsersEntity> optionalUsersEntity =usersEntityRepository.findById(id);
+        if (optionalUsersEntity.isEmpty()) {
+            // todo throw exception
+            log.warn("user not found");
+            return null;
+        }
+        // limit to basic info - use separate function to update email/password/phone with rules
+        UsersEntity usersEntity = optionalUsersEntity.get();
+        usersEntity.setFirstName(usersRequest.firstName());
+        usersEntity.setLastName(usersRequest.lastName());
+        usersEntity.setDateUpdated(new Timestamp(new Date().getTime()));
+        return usersEntityRepository.save(usersEntity);
+    }
+
+    @Override
+    public ChangePasswordResponseDto updatePassword(ChangePasswordRequest changePasswordRequest, Integer id) {
+        Optional<UsersEntity> optionalUsersEntity =usersEntityRepository.findById(id);
+        if (optionalUsersEntity.isEmpty()) {
+            log.warn("user not found");
+            return new ChangePasswordResponseDto("05", "Invalid user");
+        }
+        UsersEntity usersEntity = optionalUsersEntity.get();
+        if (!changePasswordRequest.newPassword().equals(changePasswordRequest.confirmPassword())) {
+            log.warn("new password and confirmation password do not match");
+            return new ChangePasswordResponseDto("05", "new password and confirmation password do not match");
+        } else if (changePasswordRequest.currentPassword().equals(changePasswordRequest.newPassword())) {
+            log.warn("new password should not be the same as current password");
+            return new ChangePasswordResponseDto("05", "new password should not be the same as current password");
+        } else if (!encoder.matches(changePasswordRequest.currentPassword(), usersEntity.getPassword())) {
+            log.warn("current password is invalid");
+            return new ChangePasswordResponseDto("05", "current password is invalid");
+        }
+        usersEntity.setPassword(encoder.encode(changePasswordRequest.newPassword()));
+        usersEntity.setDateUpdated(new Timestamp(new Date().getTime()));
+        usersEntityRepository.save(usersEntity);
+        return new ChangePasswordResponseDto("00", "password change successful");
     }
 
     @Override
