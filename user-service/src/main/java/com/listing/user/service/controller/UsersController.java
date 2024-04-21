@@ -81,7 +81,7 @@ public class UsersController {
                 .orElseGet(() -> ResponseEntity.ok().build());
     }
 
-    @PutMapping(value = "/change-password/{id}")
+    @PutMapping(value = "/change-password/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ChangePasswordResponseDto> changePassword(@PathVariable Integer id, @RequestBody ChangePasswordRequest changePasswordRequest) {
         log.info("change password request -- id[{}]", id);
         return ResponseEntity.ok(databaseService.updatePassword(changePasswordRequest, id));
