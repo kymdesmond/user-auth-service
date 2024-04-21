@@ -1,11 +1,14 @@
 package com.listing.user.service.entity;
 
 import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Objects;
 
+@Setter
 @Entity
 @Getter
 @Table(name = "users", schema = "auth")
@@ -46,54 +49,12 @@ public class UsersEntity {
     @ManyToOne
     @JoinColumn(name = "entity_id")
     private EntitiesEntity entitiesEntity;
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setDateCreated(Timestamp dateCreated) {
-        this.dateCreated = dateCreated;
-    }
-
-    public void setDateUpdated(Timestamp dateUpdated) {
-        this.dateUpdated = dateUpdated;
-    }
-
-    public void setCreatedBy(Integer createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public void setEntitiesEntity(EntitiesEntity entitiesEntity) {
-        this.entitiesEntity = entitiesEntity;
-    }
-
-    public void setRoleMapEntityList(List<RoleMapEntity> roleMapEntityList) {
-        this.roleMapEntityList = roleMapEntityList;
-    }
+    @Basic
+    @Column(name = "avatar")
+    private String avatar;
+    @Basic
+    @Column(name = "bio")
+    private String bio;
 
     @Override
     public boolean equals(Object o) {

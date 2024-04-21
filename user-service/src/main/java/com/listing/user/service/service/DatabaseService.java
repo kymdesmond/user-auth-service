@@ -12,7 +12,6 @@ import java.util.Optional;
 
 public interface DatabaseService {
     UsersEntity createUser(UsersRequest usersRequest);
-
     UsersEntity updateUser(UsersRequest usersRequest, Integer id);
     ChangePasswordResponseDto updatePassword(ChangePasswordRequest changePasswordRequest, Integer id);
     List<UsersEntity> findAll();

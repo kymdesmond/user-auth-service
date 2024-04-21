@@ -10,9 +10,9 @@ spring:
       name: root
       password: root
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
-    username: postgres
-    password: root
+    url: jdbc:postgresql://ep-morning-fog-56992280.us-east-2.aws.neon.tech/listing_db?sslmode=require
+    username: kymdesmond
+    password: hxaDIps26qeK
     hikari:
       maximum-pool-size: 20
       connection-timeout: 20000

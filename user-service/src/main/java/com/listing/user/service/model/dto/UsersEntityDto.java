@@ -14,7 +14,8 @@ public record UsersEntityDto(
         String username,
         String phone,
         String email,
-
+        String avatar,
+        String bio,
         String entity,
         int entityId,
         List<String> roles,

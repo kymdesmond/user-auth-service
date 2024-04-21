@@ -42,6 +42,8 @@ public class UsersEntityServiceImpl implements UsersEntityService{
         usersEntity.setPassword(encoder.encode(usersRequest.password()));
         usersEntity.setEntitiesEntity(optionalEntitiesEntity.orElse(null));
         usersEntity.setRoleMapEntityList(Collections.emptyList()); //todo support adding of roles here
+        usersEntity.setAvatar(usersRequest.avatar());
+        usersEntity.setBio(usersRequest.bio());
         usersEntity.setCreatedBy(usersEntity.getCreatedBy());
         usersEntity.setDateCreated(new Timestamp(new Date().getTime()));
         usersEntity.setDateUpdated(new Timestamp(new Date().getTime()));
@@ -60,6 +62,8 @@ public class UsersEntityServiceImpl implements UsersEntityService{
         UsersEntity usersEntity = optionalUsersEntity.get();
         usersEntity.setFirstName(usersRequest.firstName());
         usersEntity.setLastName(usersRequest.lastName());
+        usersEntity.setAvatar(usersRequest.avatar());
+        usersEntity.setBio(usersRequest.bio());
         usersEntity.setDateUpdated(new Timestamp(new Date().getTime()));
         return usersEntityRepository.save(usersEntity);
     }

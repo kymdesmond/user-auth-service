@@ -13,6 +13,8 @@ public class UserMapperImpl implements UserMapper{
                 usersEntity.getUsername(),
                 usersEntity.getPhone(),
                 usersEntity.getEmail(),
+                usersEntity.getAvatar(),
+                usersEntity.getBio(),
                 usersEntity.getEntitiesEntity() != null ? usersEntity.getEntitiesEntity().getName() : "",
                 usersEntity.getEntitiesEntity() != null ? usersEntity.getEntitiesEntity().getId() : 0,
                 usersEntity.getRoleMapEntityList()
